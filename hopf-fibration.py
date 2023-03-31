@@ -4,6 +4,9 @@ import matplotlib.pyplot as plt
 import matplotlib.colors as colors
 import matplotlib.animation as animation
 
+import imageio.v3 as iio
+from pathlib import Path
+
 '''
 Coordinate stuff
 '''
@@ -304,7 +307,7 @@ Test function
 
 def test_function(fig):
     
-    # Add your test stuff here
+    # Add your test stuff here to figure fig
     
     return fig
 
@@ -326,11 +329,13 @@ longitude_points = longitudes(frame_no, n)
 my_points = great_circles_axis(a0, b0, c0, frame_no, n)
 
 examples = [latitude_points, longitude_points, my_points]
-example_names = ["latitudes/latitudes", "longitudes/longitudes", "my_points/my_points"]
+example_dir = ["latitudes", "longitudes", "my_points"]
+example_names = ["latitudes", "longitudes", "my_points"]
+example_filenames = [example_dir[i]+"/"+example_names[i] for i in range(len(examples))]
 example_coloring = [default_color for example in examples]
 
 test_environment = False
-save_frames = True
+save_frames = False
 show_animation = False
 
 
@@ -348,10 +353,16 @@ if test_environment:
 
 if save_frames:
     for i in range(len(examples)):
-        frames_to_files(examples[i], example_names[i], color_function=example_coloring[i])
+        frames_to_files(examples[i], example_filenames[i], color_function=example_coloring[i])
 
 
 if show_animation:
     figs = [init_fig(R=4, r=2) for i in range(len(examples))]
     anis = [animation.FuncAnimation(figs[i], gen_animation, fargs=[figs[i], examples[i], default_color]) for i in range(len(examples))]
     plt.show()
+    
+
+# Makes gif
+for i in range(len(examples)):
+    frames = np.stack([iio.imread(f"{example_filenames[i]}_{int_to_string(n, int(1+np.log10(frame_no)))}.png") for n in range(frame_no)], axis=0)
+    iio.imwrite(example_names[i]+".gif", frames, loop=0)
