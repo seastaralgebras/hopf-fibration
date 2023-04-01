@@ -31,6 +31,32 @@ def spherical_to_euclidean(point):
     z = np.sin(theta) * np.sin(phi)
     return (x, y, z)
 
+# # euclidean_to_spherical: point = (x0, y0, z0) --> (phi, theta)
+# # Do we even use this here?
+# # Maps euclidean coordinates to spherical coordinates.
+# def euclidean_to_spherical(point):
+#     x0, y0, z0 = point
+#     norm = np.sqrt(x0**2 + y0**2 + z0**2)
+#     x = x0 / norm
+#     y = y0 / norm
+#     z = z0 / norm
+#     phi = np.arccos(x)
+#     if 1 - x**2 <= 0:
+#         return (phi, 0)
+#     else:
+#         ratio_0 = y / np.sin(phi)
+#         ratio_1 = z / np.sin(phi)
+#         if ratio_1 > 1:
+#             theta = np.pi / 2
+#         elif ratio_1 < -1:
+#             theta = -np.pi / 2
+#         else:
+#             theta = np.arcsin(ratio_1)
+#         if ratio_0 > 0:
+#             return (phi, theta)
+#         elif ratio_0 < 0:
+#             return (phi, np.pi - theta)
+
 
 '''
 Preimage of the Hopf map
@@ -50,6 +76,7 @@ def fiber(point):
                            np.sqrt((1+x) / 2) * np.sin(t), 
                            (1 / np.sqrt(2 * (1+x))) * (-y * np.cos(t) + z * np.sin(t)), 
                            (1 / np.sqrt(2 * (1+x))) * (z * np.cos(t) + y * np.sin(t)) )
+
 
 # s2_to_fiber: point = (x, y, z) --> (t --> (x0, y0, z0))
 # Input is from S^2, output is a function that maps t to the stereographic projection of fiber(point)(t) in R^3
@@ -133,6 +160,7 @@ def scale_axes(fig, R=4, r=2, clear_axes=True):
 def legend_method(fig):
     for ax in fig.get_axes():
         ax.legend()
+
 
 # init_fig: OPTIONAL: R=4 and r=2 for bounds of S^3 and S^2 viewing respectively --> fig
 # creates, clears, and resizes axes, sets autoscale to False, returns fig
@@ -241,6 +269,9 @@ def latitudes(frame_no, n):
 def longitudes(frame_no, n):
     frames = great_circles_axis(1, 0, 0, frame_no, n)
     return frames
+    
+
+
 
 
 '''
@@ -267,19 +298,8 @@ Test function
 def test_function(fig):
     
     # Add your test stuff here to figure fig
-    # frame_no = 60
-    # n = 24
-    # a, b, c = (1,2,-1)
     
-    # more_points = great_circles_axis(a, b, c, frame_no, n)
-    
-    # my_ani = animation.FuncAnimation(fig, gen_animation, fargs=[fig, more_points, default_color])
-    
-    
-    return my_ani
-    
-    
-
+    return fig
 
 
 '''
@@ -290,9 +310,9 @@ frame_no = 60
 
 n = 24
 
-a0 = 0
-b0 = 0
-c0 = 1
+a0 = 1
+b0 = 2
+c0 = -1
 
 latitude_points = latitudes(frame_no, n)
 longitude_points = longitudes(frame_no, n)
@@ -305,9 +325,9 @@ example_filenames = [example_dir[i]+"/"+example_names[i] for i in range(len(exam
 example_coloring = [default_color for example in examples]
 
 test_environment = False
-show_animation = False
 save_frames = False
-make_gifs = True
+show_animation = False
+make_gifs = False
 
 
 
@@ -318,7 +338,7 @@ Runs
 
 if test_environment:
     fig = init_fig()
-    thing = test_function(fig)
+    test_function(fig)
     plt.show()
 
 
