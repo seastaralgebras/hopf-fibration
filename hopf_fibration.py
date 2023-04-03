@@ -90,8 +90,6 @@ def plot_hopf_fiber(point, fig, color_param, color_function=default_color):
 # For each point, color_parameter in test_points, plots point with color color_function(color_parameter)
 # Good for single frames
 def plot_hopf_fibers(test_points, fig, color_function=default_color):
-    ax_s3 = fig.get_axes()[0]
-    ax_s2 = fig.get_axes()[1]
     for point, color_parameter in test_points:
         plot_hopf_fiber(point, fig, color_parameter, color_function)
 
