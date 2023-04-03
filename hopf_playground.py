@@ -23,14 +23,17 @@ def int_to_string(n, max_digits):
 def frames_to_files(my_frames, name, color_function=default_color):
     n = len(my_frames)
     max_digits = int(np.log10(n)+1)
+    files = []
     for i in range(n):
         frame = my_frames[i]
         fig = create_fig()
         scale_axes(fig)
         plot_hopf_fibers(frame, fig, color_function)
         file_name = name + "_" + int_to_string(i, max_digits) + ".png"
+        files.append(file_name)
         fig.savefig(file_name)
         plt.close()
+    return files
 
 
 
@@ -67,9 +70,9 @@ def runs(test_environment, show_animations, save_frames, make_gifs, example_data
     # Makes gif
     if make_gifs:
         for i in range(len(examples)):
-            frames_to_files(examples[i], example_filenames[i], color_function=example_coloring[i])
+            files = frames_to_files(examples[i], example_filenames[i], color_function=example_coloring[i])
 
-            frames = np.stack([iio.imread(f"{example_filenames[i]}_{int_to_string(n, int(1+np.log10(frame_no)))}.png") for n in range(frame_no)], axis=0)
+            frames = np.stack([iio.imread(file_name) for file_name in files], axis=0)
             iio.imwrite(example_names[i]+".gif", frames, loop=0)
 
 
@@ -87,7 +90,7 @@ def test_function(fig):
     n = 24
     a, b, c = (1,2,-1)
     
-    more_points = latitudes(frame_no, n)
+    more_points = great_circles_axis(a, b, c, frame_no, n)
     
     my_ani = make_animation(fig, more_points)
     
@@ -125,6 +128,6 @@ example_data = (examples, example_dir, example_names, example_coloring)
 test_environment = False
 show_animations = False
 save_frames = False
-make_gifs = True
+make_gifs = False
 
 runs(test_environment, show_animations, save_frames, make_gifs, example_data)
